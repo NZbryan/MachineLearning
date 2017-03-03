@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar  3 14:08:01 2017
-
-@author: yinyang_ni
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar  3 12:35:20 2017
-
-@author: yinyang_ni
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Mar  2 17:12:08 2017
+Created on Fri Mar  3 14:58:27 2017
 
 @author: yinyang_ni
 """
@@ -85,24 +71,24 @@ def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 1, 2, 1],
                         strides=[1, 1, 2, 1], padding='SAME')
 
-W_conv1 = weight_variable([1, 5, 1, 32])
-b_conv1 = bias_variable([32])
+W_conv1 = weight_variable([1, 5, 1, 1])
+b_conv1 = bias_variable([1])
 
 x_input = tf.reshape(x, [-1,1,x_data.shape[1],1])
 
 h_conv1 = tf.nn.relu(conv2d(x_input, W_conv1) + b_conv1)
 h_pool1 = max_pool_2x2(h_conv1)
 
-W_conv2 = weight_variable([1, 5, 32, 64])
-b_conv2 = bias_variable([64])
+W_conv2 = weight_variable([1, 5, 1, 1])
+b_conv2 = bias_variable([1])
 
 h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 
-W_fc1 = weight_variable([n_x_data * 64, 1024])
+W_fc1 = weight_variable([n_x_data * 1, 1024])
 b_fc1 = bias_variable([1024])
 
-h_pool2_flat = tf.reshape(h_pool2, [-1, n_x_data*64])
+h_pool2_flat = tf.reshape(h_pool2, [-1, n_x_data*1])
 h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
 
 keep_prob = tf.placeholder("float")
@@ -127,8 +113,9 @@ sess.run(tf.global_variables_initializer())
 #     print ("step %d, training accuracy %g"%(i, train_accuracy))
 #   train_step.run(feed_dict={x: x_data, y_: y, keep_prob: 0.5})
 #==============================================================================
-for i in range(100):   
+for i in range(200):   
     train_accuracy = accuracy.eval(feed_dict={
             x:x_data, y_: y, keep_prob: 1.0})
     print ("step %d, training accuracy %g"%(i, train_accuracy))
-    train_step.run(feed_dict={x: x_data, y_: y, keep_prob: 0.5})
+    train_step.run(feed_dict={x: x_data, y_: y, keep_prob: 1.0})
+    

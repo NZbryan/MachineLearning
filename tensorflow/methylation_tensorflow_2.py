@@ -39,12 +39,13 @@ from sklearn.preprocessing import label_binarize
 y = label_binarize(y_test, classes=["N","T"])
 j1=y.T[0]
 j2 = 1-j1
-
 y = np.c_[y,j2]
 
 x_data = X.astype("float32")
 #x_data = X[:,:200]
 y_data = y
+
+
 #==============================================================================
 # from sklearn import preprocessing
 # lb = preprocessing.LabelBinarizer()
