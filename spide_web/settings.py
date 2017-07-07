@@ -92,6 +92,6 @@ HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 MYSQL_HOSTS = '127.0.0.1'
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'bin111'
+MYSQL_PASSWORD = 'XXXX'
 MYSQL_PORT = '3306'
 MYSQL_DB = 'xiaoshuo'
