@@ -1,9 +1,9 @@
 
-#<center>A demo of the  Biclustering algorithm
+#<center> A demo of the  Biclustering algorithm </center>
 
 &ensp;
 
-##1.Introduction
+## 1.Introduction
 &ensp;
 
 （1）bicluster 不同于传统的cluster，它会根据 sample与region两个方向去聚类。
@@ -12,9 +12,11 @@
 
 &ensp;
 
-##2.Block diagonal
+## 2.Block diagonal
 &ensp;
+
 algorithm: 
+
 In the Block diagonal  each row and each column belongs to exactly one bicluster, then rearranging the rows and columns of the data matrix reveals the biclusters on the diagonal. Here is an example of this structure where biclusters have higher average values than the other rows and columns.
 
 &ensp;
@@ -28,14 +30,15 @@ In the Block diagonal  each row and each column belongs to exactly one bicluster
 “Bicluster” 是按照这个算法把混乱的数据做聚类后，对应的热力图
 
 
-###这说明，如果原本数据存在*Block diagonal*这种结构，我们可以根据这个算法从混乱的数据中找出来。
+### 这说明，如果原本数据存在*Block diagonal*这种结构，我们可以根据这个算法从混乱的数据中找出来。
 
 ![Block_diagonal](Block_diagonal.png)
 
 
 
-##3. Checkerboard Structures
+## 3. Checkerboard Structures
 &ensp;
+
 algorithm: 
 
 In the checkerboard case, each row belongs to all column clusters, and each column belongs to all row clusters. Here is an example of this structure where the variance of the values within each bicluster is small。
@@ -54,14 +57,15 @@ In the checkerboard case, each row belongs to all column clusters, and each colu
 
 &ensp;
 
-###这也说明，这种算法可以从混乱的数据中找出*Checkerboard*结构的数据。
+### 这也说明，这种算法可以从混乱的数据中找出*Checkerboard*结构的数据。
 
 
 ![Checkboard](Checkboard.png)
 
 &ensp;
 
-##4. Validation of Gene data
+## 4. Validation of Gene data
+
 &ensp;
 
 我把上面的两个算法应用到基因数据中，进行验证，具体效果如下：
