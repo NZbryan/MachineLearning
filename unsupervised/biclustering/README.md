@@ -1,5 +1,8 @@
 
-#<center> A demo of the  Biclustering algorithm </center>
+ <h1 align="center">
+  A demo of the  Biclustering algorithm
+ </h1>
+
 
 &ensp;
 
