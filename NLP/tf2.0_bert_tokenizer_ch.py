@@ -7,6 +7,7 @@ import numpy as np
 import re
 import random
 import math
+import os
 
 class TEXT_MODEL(tf.keras.Model):
     
@@ -70,13 +71,14 @@ def tokenize_text(text_input):
 if __name__ == '__main__': 
     
     # hyper parameters
-    BATCH_SIZE = 32
-    EMB_DIM = 200
+    BATCH_SIZE = 128
+    EMB_DIM = 300
     CNN_FILTERS = 100
     DNN_UNITS = 256
     OUTPUT_CLASSES = 10
-    DROPOUT_RATE = 0.2
-    NB_EPOCHS = 5
+    DROPOUT_RATE = 0.5
+    NB_EPOCHS = 20
+    max_len = 32
     
     # raw data
     df_raw = pd.read_csv("data.txt",sep="\t",header=None,names=["text","label"])
@@ -88,8 +90,13 @@ if __name__ == '__main__':
     
     # Creating a BERT Tokenizer
     BertTokenizer = bert.bert_tokenization.FullTokenizer
-    bert_layer = hub.KerasLayer("bert_zh_L-12_H-768_A-12_2",
-                                trainable=False)
+    if os.path.isdir("bert_zh_L-12_H-768_A-12_2"):
+        bert_layer = hub.KerasLayer("bert_zh_L-12_H-768_A-12_2",
+                            trainable=False)
+    else:
+        
+        bert_layer = hub.KerasLayer("https://tfhub.dev/tensorflow/bert_zh_L-12_H-768_A-12/2",
+                                    trainable=False)
     vocabulary_file = bert_layer.resolved_object.vocab_file.asset_path.numpy()
     to_lower_case = bert_layer.resolved_object.do_lower_case.numpy()
     tokenizer = BertTokenizer(vocabulary_file, to_lower_case)
@@ -105,14 +112,15 @@ if __name__ == '__main__':
     text_with_len = [[text, y[i], len(text)]
                  for i, text in enumerate(tokenized_text)]
     random.shuffle(text_with_len)
-    text_with_len.sort(key=lambda x: x[2])
-    sorted_text_labels = [(text_lab[0], text_lab[1]) for text_lab in text_with_len]
-    
+    # text_with_len.sort(key=lambda x: x[2])
+    # sorted_text_labels = [(text_lab[0], text_lab[1]) for text_lab in text_with_len]
+    sorted_text_labels = [(text_lab[0][:max_len], text_lab[1]) for text_lab in text_with_len]
     processed_dataset = tf.data.Dataset.from_generator(lambda: sorted_text_labels, output_types=(tf.int32, tf.int32))
-    batched_dataset = processed_dataset.padded_batch(BATCH_SIZE, padded_shapes=((None, ), ()))
+    # batched_dataset = processed_dataset.padded_batch(BATCH_SIZE, padded_shapes=((None, ), ()))
+    batched_dataset = processed_dataset.padded_batch(BATCH_SIZE, padded_shapes=((max_len, ), ()))
     
     TOTAL_BATCHES = math.ceil(len(sorted_text_labels) / BATCH_SIZE)
-    TEST_BATCHES = TOTAL_BATCHES // 10
+    TEST_BATCHES = TOTAL_BATCHES // 20
     batched_dataset.shuffle(TOTAL_BATCHES)
     test_data = batched_dataset.take(TEST_BATCHES)
     train_data = batched_dataset.skip(TEST_BATCHES)
@@ -135,6 +143,7 @@ if __name__ == '__main__':
                            metrics=["sparse_categorical_accuracy"])
         
     text_model.fit(train_data, epochs=NB_EPOCHS)
+    # text_model.fit(train_data, epochs=NB_EPOCHS,validation_data=test_data)
     # test test data
     results = text_model.evaluate(test_data)
     print(results)
